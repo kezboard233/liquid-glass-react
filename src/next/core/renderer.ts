@@ -309,17 +309,17 @@ export class LiquidGlassRenderer {
     const u = this.uniforms;
     const { options } = this;
     const cssW = this.host.clientWidth || 1;
-    const cssH = this.host.clientHeight || 1;
 
     if (u.u_resolution) gl.uniform2f(u.u_resolution, this.canvas.width, this.canvas.height);
     if (u.u_time) gl.uniform1f(u.u_time, (performance.now() - this.startTime) / 1000);
-    if (u.u_mouse) {
-      const mx = options.mousePos ? options.mousePos.x / cssW : 0.5;
-      const my = options.mousePos ? options.mousePos.y / cssH : 0.5;
-      gl.uniform2f(u.u_mouse, mx, my);
+    if (u.u_mousePos) {
+      const dpr = this.canvas.width / cssW;
+      const mx = options.mousePos ? options.mousePos.x * dpr : -1;
+      const my = options.mousePos ? options.mousePos.y * dpr : -1;
+      gl.uniform2f(u.u_mousePos, mx, my);
     }
     if (u.u_displacementScale) gl.uniform1f(u.u_displacementScale, options.displacementScale);
-    if (u.u_aberrationIntensity) gl.uniform1f(u.u_aberrationIntensity, options.aberrationIntensity);
+    if (u.u_aberration) gl.uniform1f(u.u_aberration, options.aberrationIntensity);
     if (u.u_elasticity) gl.uniform1f(u.u_elasticity, options.elasticity);
     if (u.u_cornerRadius) gl.uniform1f(u.u_cornerRadius, options.cornerRadius);
     if (u.u_overLight) gl.uniform1f(u.u_overLight, options.overLight ? 1 : 0);

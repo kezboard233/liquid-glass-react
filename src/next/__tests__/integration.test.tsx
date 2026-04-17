@@ -9,13 +9,11 @@
  * the local mock when Unit 5 has not yet landed in this worktree. This keeps
  * the test file stable across the additive rollout.
  */
-import * as React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-// @ts-expect-error — Unit 5 will provide the real LiquidGlass at this path.
-// Until then the local mock under __mocks__ is resolved via the rewrite below.
 import LiquidGlass from "../react/LiquidGlass";
+import { LiquidGlassRenderer } from "../core/renderer";
 
 describe("next/<LiquidGlass> integration", () => {
   it("renders children", () => {
@@ -90,22 +88,19 @@ describe("next/<LiquidGlass> integration", () => {
   });
 
   it("triggers an update effect when visual props change", () => {
+    const updateSpy = vi.spyOn(LiquidGlassRenderer.prototype, "update");
     const { rerender } = render(
       <LiquidGlass displacementScale={40}>
         <span>content</span>
       </LiquidGlass>,
     );
-    const initial = Number(
-      screen.getByTestId("liquid-glass-host").dataset.updateCount,
-    );
+    const initial = updateSpy.mock.calls.length;
     rerender(
       <LiquidGlass displacementScale={80}>
         <span>content</span>
       </LiquidGlass>,
     );
-    const next = Number(
-      screen.getByTestId("liquid-glass-host").dataset.updateCount,
-    );
-    expect(next).toBeGreaterThan(initial);
+    expect(updateSpy.mock.calls.length).toBeGreaterThan(initial);
+    updateSpy.mockRestore();
   });
 });

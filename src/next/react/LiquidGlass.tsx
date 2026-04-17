@@ -42,7 +42,7 @@ const LiquidGlass: React.FC<LiquidGlassProps> = ({
   const hostRef = React.useRef<HTMLDivElement>(null);
   const rendererRef = React.useRef<LiquidGlassRenderer | null>(null);
 
-  const options: Partial<LiquidGlassOptions> = {
+  const options: LiquidGlassOptions = {
     displacementScale,
     blurAmount,
     saturation,
@@ -52,8 +52,12 @@ const LiquidGlass: React.FC<LiquidGlassProps> = ({
     padding,
     overLight,
     mode,
-    mouseOffset,
-    globalMousePos,
+    mousePos: globalMousePos
+      ? {
+          x: globalMousePos.x + (mouseOffset?.x ?? 0),
+          y: globalMousePos.y + (mouseOffset?.y ?? 0),
+        }
+      : null,
   };
 
   React.useEffect(() => {
@@ -107,6 +111,7 @@ const LiquidGlass: React.FC<LiquidGlassProps> = ({
   return (
     <div
       ref={hostRef}
+      data-testid="liquid-glass-host"
       className={className}
       onClick={onClick}
       style={{
