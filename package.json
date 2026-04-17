@@ -52,7 +52,12 @@
     "vite-plugin-dts": "^4.2.0",
     "vitest": "^2.1.0"
   },
-  "keywords": ["react", "component", "library", "typescript"],
+  "keywords": [
+    "react",
+    "component",
+    "library",
+    "typescript"
+  ],
   "author": "",
   "license": "MIT",
   "repository": {
