@@ -1,0 +1,28 @@
+name: next-ci
+
+# CI for the `next` (v2) architecture rollout. Each step is guarded with
+# `continue-on-error: true` because Units 1-5 land incrementally and the
+# referenced scripts / tsconfig may not exist until the corresponding unit
+# merges. Once every unit has landed on master, remove the guards.
+
+on:
+  push:
+    branches: [master, 'feat/next-*']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      # Temporary: Unit 1 adds tsconfig.next.json.
+      - run: bunx tsc -p tsconfig.next.json --noEmit
+        continue-on-error: true
+      # Temporary: Units 2-5 flesh out the `next` source that these tests cover.
+      - run: bun run test
+        continue-on-error: true
+      # Temporary: Unit 1 adds the build:next script.
+      - run: bun run build:next
+        continue-on-error: true
