@@ -5,5 +5,6 @@ export default defineConfig({
     environment: "happy-dom",
     globals: false,
     include: ["src/next/**/*.{test,spec}.{ts,tsx}"],
+    setupFiles: ["src/next/__tests__/setup.ts"],
   },
 });

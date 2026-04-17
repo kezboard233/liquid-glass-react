@@ -112,3 +112,44 @@ function App() {
 | `mode` | `"standard" \| "polar" \| "prominent" \| "shader"` | `"standard"` | Refraction mode for different visual effects. `shader` is the most accurate but not the most stable. |
 | `globalMousePos` | `{ x: number; y: number }` | - | Global mouse position coordinates for manual control |
 | `mouseOffset` | `{ x: number; y: number }` | - | Mouse position offset for fine-tuning positioning |
+
+---
+
+## v2 Preview (Next Architecture)
+
+A ground-up rewrite is available under the `liquid-glass-react/next` subpath:
+
+- **Framework-agnostic core**: `LiquidGlassRenderer` class (vanilla TS) that you can use without React.
+- **WebGL 2 fragment shader**: replaces the SVG filter pipeline. SDF-based refraction + procedural chromatic aberration, no JPEG displacement maps.
+- **Hybrid backdrop**: CSS `backdrop-filter` for the blur, transparent WebGL canvas overlay for refraction & highlights.
+- **Props are 1:1 compatible** with v1 — migration is a single-line import change.
+
+### Usage
+
+```tsx
+import LiquidGlass from 'liquid-glass-react/next'
+
+<LiquidGlass displacementScale={80} aberrationIntensity={3}>
+  <span>Shiny</span>
+</LiquidGlass>
+```
+
+### Advanced: framework-agnostic
+
+```ts
+import { LiquidGlassRenderer } from 'liquid-glass-react/next'
+
+const renderer = new LiquidGlassRenderer(document.querySelector('#target')!, {
+  displacementScale: 80,
+})
+renderer.update({ mode: 'prominent' })
+renderer.destroy()
+```
+
+### Browser support
+
+Requires WebGL 2 (Chromium 56+, Firefox 51+, Safari 15+). Falls back silently to a static blur on older browsers.
+
+### Status
+
+Preview. Default import still points to v1 until 2.0.0.
