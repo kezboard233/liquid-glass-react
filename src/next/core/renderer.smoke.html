@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>LiquidGlassRenderer smoke test</title>
+    <style>
+      html, body { margin: 0; height: 100%; font-family: -apple-system, sans-serif; }
+      body {
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(800px 600px at 20% 30%, #ff6a88, transparent),
+          radial-gradient(700px 500px at 80% 70%, #5ef, transparent),
+          linear-gradient(135deg, #1a1a2e, #16213e);
+      }
+      #host {
+        width: 320px;
+        height: 180px;
+        border-radius: 24px;
+        color: white;
+        font-weight: 600;
+        display: grid;
+        place-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="host">liquid glass</div>
+    <script type="module">
+      // Bundle first:
+      //   npx esbuild src/next/core/renderer.ts --bundle --format=esm \
+      //     --outfile=src/next/core/renderer.smoke.js
+      // Then serve this directory and open this file in a browser.
+      import { LiquidGlassRenderer } from "./renderer.smoke.js";
+      const host = document.getElementById("host");
+      const r = new LiquidGlassRenderer(host, {
+        displacementScale: 60,
+        aberrationIntensity: 2.5,
+        cornerRadius: 24,
+      });
+      // Expose for manual poking in devtools.
+      window.__renderer = r;
+      console.log("[smoke] renderer created");
+    </script>
+  </body>
+</html>
