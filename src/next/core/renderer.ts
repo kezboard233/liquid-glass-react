@@ -107,6 +107,9 @@ export class LiquidGlassRenderer {
   private disposed = false;
   private contextLost = false;
   private readonly priorPosition: string;
+  private readonly priorPadding: string;
+  private readonly priorBackdropFilter: string;
+  private readonly priorWebkitBackdropFilter: string;
 
   private readonly onContextLost = (e: Event): void => {
     e.preventDefault();
@@ -136,6 +139,9 @@ export class LiquidGlassRenderer {
     // Ensure the host is a positioned containing block for the absolute canvas.
     const computed = typeof getComputedStyle === "function" ? getComputedStyle(host) : null;
     this.priorPosition = host.style.position;
+    this.priorPadding = host.style.padding;
+    this.priorBackdropFilter = host.style.backdropFilter;
+    this.priorWebkitBackdropFilter = (host.style as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter ?? "";
     if (computed && computed.position === "static") {
       host.style.position = "relative";
     }
@@ -231,8 +237,10 @@ export class LiquidGlassRenderer {
       this.host.removeChild(this.canvas);
     }
 
-    // Restore host position if we changed it.
     this.host.style.position = this.priorPosition;
+    this.host.style.padding = this.priorPadding;
+    this.host.style.backdropFilter = this.priorBackdropFilter;
+    (this.host.style as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter = this.priorWebkitBackdropFilter;
   }
 
   // --- internal ---------------------------------------------------------

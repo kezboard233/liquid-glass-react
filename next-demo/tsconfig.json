@@ -14,7 +14,11 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "liquid-glass-react/next": ["../dist/next/index.d.ts"]
+    }
   },
   "include": ["src", "vite.config.ts"]
 }
