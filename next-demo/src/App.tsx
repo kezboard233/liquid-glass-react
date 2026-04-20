@@ -101,7 +101,8 @@ export default function App() {
               Liquid Glass — v2 Preview
             </h1>
             <p style={{ fontSize: 16, opacity: 0.9, margin: 0, lineHeight: 1.5 }}>
-              A Vanilla TS + WebGL 2 engine with a thin React adapter. Drag the
+              SVG filter chain over CSS backdrop-filter: real refraction sampling
+              the backdrop, with per-channel chromatic aberration. Drag the
               sliders on the right to tweak the glass in real time.
             </p>
           </header>
