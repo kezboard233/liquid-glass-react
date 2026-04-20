@@ -79,46 +79,49 @@ void main() {
   float radius = min(u_cornerRadius, min(halfSize.x, halfSize.y));
 
   float sdf = roundedRectSDF(p, halfSize, radius);
-  if (sdf > 0.5) {
+  if (sdf > 2.0) {
     discard;
   }
 
   vec2 g = sdfGradient(p, halfSize, radius);
 
-  // Narrow rim band: peaks 2-3 px inside the edge, fades to 0 by 6 px inside
-  // and by the outer edge. Keeps the interior of the glass fully transparent
-  // so host backdrop-filter is the dominant interior effect.
-  float rim = smoothStep(-6.0, -2.0, sdf) - smoothStep(-1.0, 0.5, sdf);
+  // Chromatic aberration: each RGB channel has its rim peak at a slightly
+  // different sdf, so R is offset outward / B inward (or vice versa). The
+  // offset is uniform around the perimeter — this is what produces a
+  // rainbow-like fringe on ALL sides, matching true refractive dispersion
+  // rather than a directional x-axis tint.
+  float ab = u_aberration * 0.45;
 
-  // Displacement drives mode variation. Used only to keep refractUV live in
-  // case future modes sample it; does not directly tint the rim.
-  vec2 disp = g * rim * u_displacementScale * 0.001;
+  // Narrow rim band: peaks ~2 px inside the edge, fades to 0 by 6 px inside
+  // and by the outer edge. Evaluated 3 times at offset sdf values for RGB.
+  float rRim = smoothStep(-6.0, -2.5, sdf + ab) - smoothStep(-1.5, 0.5, sdf + ab);
+  float gRim = smoothStep(-6.0, -2.5, sdf)      - smoothStep(-1.5, 0.5, sdf);
+  float bRim = smoothStep(-6.0, -2.5, sdf - ab) - smoothStep(-1.5, 0.5, sdf - ab);
+
+  // Displacement path: keeps refractUV live and lets mode variants modulate.
+  vec2 disp = g * gRim * u_displacementScale * 0.001;
   float modeGain = 1.0;
   if (u_mode == 1) {
     float ang = atan(p.y, p.x);
     vec2 tangent = vec2(-sin(ang), cos(ang));
-    disp = tangent * rim * u_displacementScale * 0.001;
+    disp = tangent * gRim * u_displacementScale * 0.001;
     modeGain = 1.1;
   } else if (u_mode == 2) {
-    modeGain = 1.4;
+    modeGain = 1.35;
   } else if (u_mode == 3) {
     float wobble = 0.5 + 0.5 * sin(u_time * 1.5);
     modeGain = 0.85 + 0.3 * wobble;
   }
   vec2 sampledUV = refractUV(v_uv, sdf, g, u_displacementScale);
 
-  // Directional light: top-left brighter, bottom-right darker. Treat the
-  // outward normal as the SDF gradient and dot with a fixed light vector.
+  // Directional light: top-left brighter. Normal is the SDF gradient tilted
+  // up by a fixed amount.
   vec3 lightDir = normalize(vec3(-0.5, -0.7, 0.5));
   vec3 normal = normalize(vec3(g, 0.35));
   float lambert = clamp(dot(normal, lightDir), 0.0, 1.0);
-  float rimHighlight = rim * mix(0.35, 1.0, lambert) * modeGain;
+  float lightGain = mix(0.35, 1.0, lambert) * modeGain;
 
-  // Chromatic aberration: R pulled along +gradient, B along -gradient.
-  float ab = u_aberration * 0.25;
-  vec3 rgb = vec3(rimHighlight);
-  rgb.r += rim * g.x * ab;
-  rgb.b -= rim * g.x * ab;
+  vec3 rgb = vec3(rRim, gRim, bRim) * lightGain;
 
   // Mouse specular — only when the host has seen a mousemove.
   if (u_mousePos.x >= 0.0 && u_mousePos.y >= 0.0) {
@@ -129,18 +132,20 @@ void main() {
     rgb += vec3(spec);
   }
 
-  // Use displacement contribution to modulate rim a touch, so displacementScale
-  // slider stays responsive.
+  // Displacement contribution keeps the displacementScale slider responsive.
   rgb += vec3(length(disp) * 0.5);
 
   if (u_overLight >= 0.5) {
     rgb *= 0.55;
   }
 
-  // Keep sampledUV in the output path so the compiler doesn't strip it.
+  // Keep sampledUV live so the compiler doesn't strip refractUV.
   rgb += vec3((sampledUV.x - v_uv.x) * 0.0);
 
-  float alpha = rim * 0.6;
+  // Alpha = union of the three channel rims so the composite coverage is
+  // whatever is lit at the widest offset.
+  float alphaMask = max(max(rRim, gRim), bRim);
+  float alpha = alphaMask * 0.6;
   fragColor = vec4(clamp(rgb, 0.0, 1.0), clamp(alpha, 0.0, 1.0));
 }
 `;
