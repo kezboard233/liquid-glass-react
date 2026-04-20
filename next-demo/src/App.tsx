@@ -26,16 +26,16 @@ const DEFAULTS: Props = {
 }
 
 const scatteredEmoji = [
-  { c: "🌸", top: "8%", left: "12%", size: 72 },
-  { c: "🪩", top: "22%", left: "78%", size: 96 },
-  { c: "🍉", top: "55%", left: "6%", size: 88 },
-  { c: "🌈", top: "72%", left: "68%", size: 104 },
-  { c: "🚀", top: "40%", left: "42%", size: 80 },
-  { c: "🦄", top: "88%", left: "22%", size: 72 },
-  { c: "✨", top: "14%", left: "55%", size: 64 },
-  { c: "🍋", top: "62%", left: "88%", size: 68 },
-  { c: "🎈", top: "30%", left: "25%", size: 80 },
-  { c: "🌊", top: "80%", left: "50%", size: 84 },
+  { c: "❄️", top: "10%", left: "14%", size: 64 },
+  { c: "🏔️", top: "20%", left: "72%", size: 88 },
+  { c: "⛷️", top: "52%", left: "8%", size: 76 },
+  { c: "🌨️", top: "70%", left: "64%", size: 84 },
+  { c: "☀️", top: "12%", left: "50%", size: 72 },
+  { c: "⛄", top: "82%", left: "24%", size: 78 },
+  { c: "✨", top: "36%", left: "36%", size: 56 },
+  { c: "🦌", top: "60%", left: "86%", size: 68 },
+  { c: "🧊", top: "30%", left: "22%", size: 64 },
+  { c: "🏂", top: "78%", left: "52%", size: 80 },
 ]
 
 export default function App() {
@@ -48,8 +48,11 @@ export default function App() {
     position: "fixed",
     inset: 0,
     zIndex: -1,
-    background:
-      "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+    backgroundImage:
+      "linear-gradient(180deg, rgba(12, 30, 60, 0.35) 0%, rgba(20, 40, 80, 0.15) 45%, rgba(0, 0, 0, 0.35) 100%), url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=2400&q=80&auto=format&fit=crop)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
   }
 
   return (
