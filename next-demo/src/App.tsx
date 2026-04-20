@@ -78,33 +78,36 @@ export default function App() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 360px",
-          gap: 32,
-          padding: 32,
+          gridTemplateColumns: "minmax(0, 520px) 300px",
+          gap: 28,
+          padding: "48px 24px 120px",
+          maxWidth: 860,
+          margin: "0 auto",
           minHeight: "100vh",
           boxSizing: "border-box",
         }}
       >
-        {/* Showcase */}
+        {/* Showcase — narrow vertical column */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            gap: 48,
+            alignItems: "stretch",
+            gap: 40,
           }}
         >
-          <h1 style={{ fontSize: 48, margin: 0, textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>
-            Liquid Glass — v2 Preview
-          </h1>
-          <p style={{ maxWidth: 560, fontSize: 18, opacity: 0.9, margin: 0 }}>
-            A Vanilla TS + WebGL 2 engine with a thin React adapter. Drag the
-            sliders on the right to tweak the glass in real time.
-          </p>
+          <header style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <h1 style={{ fontSize: 40, margin: 0, lineHeight: 1.1, textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>
+              Liquid Glass — v2 Preview
+            </h1>
+            <p style={{ fontSize: 16, opacity: 0.9, margin: 0, lineHeight: 1.5 }}>
+              A Vanilla TS + WebGL 2 engine with a thin React adapter. Drag the
+              sliders on the right to tweak the glass in real time.
+            </p>
+          </header>
 
           <LiquidGlass {...props} padding="20px 24px" cornerRadius={Math.max(24, props.cornerRadius)}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, minWidth: 280 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
                 style={{
                   width: 56,
@@ -130,13 +133,41 @@ export default function App() {
             </div>
           </LiquidGlass>
 
+          <LiquidGlass {...props} padding="20px 24px" cornerRadius={Math.max(20, props.cornerRadius)}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ fontSize: 13, opacity: 0.7, textTransform: "uppercase", letterSpacing: 1 }}>
+                Today · Zermatt
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+                <span style={{ fontSize: 52, fontWeight: 300, lineHeight: 1 }}>−8°</span>
+                <span style={{ fontSize: 16, opacity: 0.8 }}>light snow</span>
+              </div>
+              <div style={{ fontSize: 13, opacity: 0.75 }}>wind 14 km/h · humidity 78%</div>
+            </div>
+          </LiquidGlass>
+
           <LiquidGlass
             {...props}
-            padding="12px 24px"
+            padding="12px 28px"
             cornerRadius={999}
             onClick={() => alert("Logged out (not really)")}
           >
             <span style={{ fontSize: 16, fontWeight: 600 }}>Log Out</span>
+          </LiquidGlass>
+
+          <LiquidGlass {...props} padding="16px 20px" cornerRadius={Math.max(18, props.cornerRadius)}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 22 }}>🎵</span>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span style={{ fontSize: 14, fontWeight: 600 }}>Chromatic Haze</span>
+                  <span style={{ fontSize: 12, opacity: 0.75 }}>Aurora · 3:42</span>
+                </div>
+              </div>
+              <span style={{ fontSize: 12, opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
+                1:18 / 3:42
+              </span>
+            </div>
           </LiquidGlass>
         </div>
 
@@ -144,7 +175,7 @@ export default function App() {
         <ControlPanel props={props} update={update} reset={() => setProps(DEFAULTS)} />
       </div>
 
-      <div style={{ height: "80vh" }} />
+      <div style={{ height: "40vh" }} />
     </div>
   )
 }
